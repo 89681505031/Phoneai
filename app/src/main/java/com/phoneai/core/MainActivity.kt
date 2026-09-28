@@ -2354,6 +2354,7 @@ class MainActivity : AppCompatActivity() {
         private const val MAX_MEMORY_CHARS = 3000
         private const val GPU_LAYERS_ALL = 99
         private const val QUALITY_PREDICT_LENGTH = 48
+        private const val DIRECT_RETRY_PREDICT_LENGTH = 192
         private const val MAX_SPEECH_MODEL_BYTES = 1800L * MIB
         private const val CONVERSATION_WINDOW_MS = 30_000L
         private const val WAKE_LISTEN_SLICE_MS = 15_000L
