@@ -25,6 +25,7 @@ import com.arm.aichat.AiChat
 import com.arm.aichat.InferenceEngine
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.phoneai.core.feedback.FeedbackStore
+import com.phoneai.core.chat.ChatActivity
 import com.phoneai.core.voice.AutoUtteranceRecorder
 import com.phoneai.core.voice.KwsCorpusStore
 import com.phoneai.core.voice.LocalAudioRecorder
@@ -55,6 +56,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var profileText: TextView
     private lateinit var modelText: TextView
     private lateinit var promptInput: EditText
+    private lateinit var openChatButton: Button
     private lateinit var modelButton: Button
     private lateinit var unloadButton: Button
     private lateinit var benchmarkButton: Button
@@ -332,6 +334,10 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        openChatButton.setOnClickListener {
+            startActivity(Intent(this, ChatActivity::class.java))
+        }
+
         sendButton.setOnClickListener {
             val prompt = promptInput.text.toString().trim()
             if (prompt.isNotBlank()) generate(prompt)
@@ -362,6 +368,7 @@ class MainActivity : AppCompatActivity() {
         profileText = findViewById(R.id.profileText)
         modelText = findViewById(R.id.modelText)
         promptInput = findViewById(R.id.promptInput)
+        openChatButton = findViewById(R.id.openChatButton)
         modelButton = findViewById(R.id.modelButton)
         unloadButton = findViewById(R.id.unloadButton)
         benchmarkButton = findViewById(R.id.benchmarkButton)
@@ -1549,7 +1556,7 @@ class MainActivity : AppCompatActivity() {
                 engine.sendUserPrompt(SakhaLanguage.routePrompt(prompt), predictLength = maxOutput).collect { piece ->
                     pieces++
                     buffer.append(piece)
-                    answerText.text = buffer.toString()
+                    answerText.text = sanitizeAssistantText(buffer.toString(), final = false)
 
                     if (pieces % 4 == 0) {
                         val seconds = (SystemClock.elapsedRealtime() - started).coerceAtLeast(1) / 1000.0
@@ -1567,20 +1574,21 @@ class MainActivity : AppCompatActivity() {
                     pieces,
                     thermalLabel()
                 )
-                lastAssistantAnswer = buffer.toString().trim()
-                if (lastAssistantAnswer?.isNotBlank() == true) {
-                    llmCorrectionInput.setText(lastAssistantAnswer)
-                }
+                val readyAnswer = sanitizeAssistantText(buffer.toString(), final = true)
+                    .ifBlank { "Модель не вернула готовый ответ. Попробуйте переформулировать запрос." }
+                answerText.text = readyAnswer
+                lastAssistantAnswer = readyAnswer
+                llmCorrectionInput.setText(readyAnswer)
                 statusText.text = if (activeGpuLayers > 0) {
                     "Готово. Ответ создан локально с запросом GPU-offload."
                 } else {
                     "Готово. Ответ создан процессором телефона."
                 }
-                if (speakSwitch.isChecked && buffer.isNotBlank()) {
+                if (speakSwitch.isChecked && readyAnswer.isNotBlank()) {
                     val callback = if (resumeHandsFreeAfter) {
                         { runOnUiThread { continueHandsFreeAfterAssistant() } }
                     } else null
-                    waitingForTts = speakLocally(buffer.toString(), callback) && resumeHandsFreeAfter
+                    waitingForTts = speakLocally(readyAnswer, callback) && resumeHandsFreeAfter
                     if (!waitingForTts && resumeHandsFreeAfter && !offlineTts.canSpeakOffline()) {
                         voiceStatusText.text = "Озвучка пропущена: офлайн-голос недоступен"
                     }
@@ -1599,6 +1607,15 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun sanitizeAssistantText(value: String, final: Boolean): String {
+        var clean = value.replace(Regex("(?is)<think>.*?</think>"), "")
+        clean = clean.replace(Regex("(?is)<think>.*$"), "")
+        clean = clean.replace(Regex("(?is)</think>"), "")
+        clean = clean.trim()
+        if (!final) return clean
+        return clean.replace(Regex("\\n{3,}"), "\n\n").trim()
     }
 
     private fun runBenchmark() {
@@ -2311,6 +2328,7 @@ class MainActivity : AppCompatActivity() {
                 "Сохраняй буквы ҕ, ҥ, ө, һ, ү и не выдумывай неизвестные якутские слова или формы. " +
                 "Если пользователь обращается по-русски, отвечай по-русски. " +
                 "Ты работаешь непосредственно на устройстве пользователя без облачного API. " +
-                "Не выдавай догадки за факты и сообщай, когда тебе не хватает данных."
+                "Не выдавай догадки за факты и сообщай, когда тебе не хватает данных. " +
+                "Не показывай скрытые рассуждения и содержимое тегов <think>."
     }
 }
