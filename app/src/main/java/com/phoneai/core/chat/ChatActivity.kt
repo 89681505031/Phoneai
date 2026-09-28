@@ -49,6 +49,7 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var engine: InferenceEngine
 
     private var modelReady = false
+    private var currentModelFile: File? = null
     private var generationJob: Job? = null
     private val pendingAttachments = mutableListOf<ChatAttachment>()
 
@@ -148,8 +149,14 @@ class ChatActivity : AppCompatActivity() {
         modelReady = false
         sendButton.isEnabled = false
         statusText.text = "Готовлю изолированный контекст чата…"
+        when (engine.state.value) {
+            is InferenceEngine.State.ModelReady,
+            is InferenceEngine.State.Error -> engine.cleanUp()
+            else -> Unit
+        }
         engine.loadModel(file.absolutePath, gpuLayers = 0)
         engine.setSystemPrompt(buildSystemPrompt(activeChat))
+        currentModelFile = file
         modelReady = true
         sendButton.isEnabled = true
         statusText.text = "Локальная модель готова • чат изолирован"
@@ -282,7 +289,7 @@ class ChatActivity : AppCompatActivity() {
             val buffer = StringBuilder()
             try {
                 engine.sendUserPrompt(
-                    SakhaLanguage.routePrompt(prompt),
+                    prepareInferencePrompt(prompt),
                     predictLength = 512
                 ).collect { piece ->
                     buffer.append(piece)
@@ -308,6 +315,12 @@ class ChatActivity : AppCompatActivity() {
                 addAttachmentButton.isEnabled = true
             }
         }
+    }
+
+    private fun prepareInferencePrompt(prompt: String): String {
+        val routed = SakhaLanguage.routePrompt(prompt)
+        val isQwen3 = currentModelFile?.name?.contains("qwen3", ignoreCase = true) == true
+        return if (isQwen3) "/no_think\n$routed" else routed
     }
 
     private fun sanitizeAssistantText(value: String, final: Boolean): String {
