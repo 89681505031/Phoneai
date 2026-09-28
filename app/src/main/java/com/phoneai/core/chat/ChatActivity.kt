@@ -527,6 +527,7 @@ class ChatActivity : AppCompatActivity() {
         private const val KEY_MODEL_PATH = "model_path"
         private const val KEY_SYSTEM_PROMPT = "system_prompt"
         private const val KEY_LOCAL_MEMORY = "local_memory"
+        private const val DIRECT_RETRY_PREDICT_LENGTH = 192
 
         private const val DEFAULT_SYSTEM_PROMPT =
             "Ты PhoneAI, локальный мобильный ИИ. Отвечай полезно, ясно и кратко. " +
