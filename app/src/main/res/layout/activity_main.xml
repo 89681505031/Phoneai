@@ -1,0 +1,818 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PhoneAI Core"
+            android:textColor="@color/text_primary"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="0.16 • Sakha Text + ASR • TTS paused"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/statusText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Инициализация локального ИИ…"
+            android:textColor="@color/accent"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/deviceText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:background="@color/panel"
+            android:padding="14dp"
+            android:textColor="@color/text_secondary"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/profileText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@color/panel_alt"
+            android:padding="14dp"
+            android:textColor="@color/text_primary"
+            android:textSize="13sp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/modelButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:enabled="false"
+            android:text="Выбрать GGUF-модель" />
+
+        <TextView
+            android:id="@+id/modelText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Модель не выбрана"
+            android:textColor="@color/text_secondary"
+            android:textSize="13sp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/manageModelsButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Менеджер локальных моделей" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/unloadButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:enabled="false"
+                android:text="Выгрузить RAM"
+                android:textSize="12sp" />
+
+            <Space android:layout_width="8dp" android:layout_height="1dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/benchmarkButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:enabled="false"
+                android:text="Тест скорости"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Ускорение"
+            android:textColor="@color/text_primary"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/gpuSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:enabled="false"
+            android:text="Экспериментальный GPU (Adreno/OpenCL)"
+            android:textColor="@color/text_primary" />
+
+        <TextView
+            android:id="@+id/backendStateText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:background="@color/panel_alt"
+            android:padding="12dp"
+            android:text="Проверяю backend-устройства…"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
+            android:text="Проверка качества"
+            android:textColor="@color/text_primary"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Короткий smoke-test проверяет простую арифметику, следование инструкции и базовую устойчивость после обучения."
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/qualityTestButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:enabled="false"
+            android:text="Запустить 4 теста качества" />
+
+        <TextView
+            android:id="@+id/qualityResultText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="Тест ещё не запускался"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Личность PhoneAI"
+            android:textColor="@color/text_primary"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Этот профиль передаётся модели как системная инструкция и хранится только на телефоне."
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp" />
+
+        <EditText
+            android:id="@+id/systemPromptInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="@color/accent"
+            android:gravity="top|start"
+            android:hint="Кто такой PhoneAI и как он должен отвечать"
+            android:inputType="textMultiLine|textCapSentences"
+            android:maxLines="8"
+            android:minLines="3"
+            android:textColor="@color/text_primary"
+            android:textColorHint="@color/text_secondary" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/saveProfileButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Сохранить личность PhoneAI" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Локальная память"
+            android:textColor="@color/text_primary"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/memoryInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="@color/accent"
+            android:gravity="top|start"
+            android:hint="Например: предпочитаю короткие ответы; мой проект называется…"
+            android:inputType="textMultiLine|textCapSentences"
+            android:maxLines="8"
+            android:minLines="3"
+            android:textColor="@color/text_primary"
+            android:textColorHint="@color/text_secondary" />
+
+        <TextView
+            android:id="@+id/memoryStateText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/saveMemoryButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="Сохранить память" />
+
+            <Space android:layout_width="8dp" android:layout_height="1dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/clearMemoryButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Очистить" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="26dp"
+            android:text="Научить PhoneAI"
+            android:textColor="@color/text_primary"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Добавляйте хорошие пары вопрос → идеальный ответ. Телефон собирает JSONL-набор для будущего LoRA-дообучения."
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp" />
+
+        <EditText
+            android:id="@+id/teachPromptInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="@color/accent"
+            android:hint="Пример вопроса или команды"
+            android:inputType="textMultiLine|textCapSentences"
+            android:maxLines="5"
+            android:minLines="2"
+            android:textColor="@color/text_primary"
+            android:textColorHint="@color/text_secondary" />
+
+        <EditText
+            android:id="@+id/teachAnswerInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:backgroundTint="@color/accent"
+            android:hint="Как PhoneAI должен идеально ответить"
+            android:inputType="textMultiLine|textCapSentences"
+            android:maxLines="7"
+            android:minLines="3"
+            android:textColor="@color/text_primary"
+            android:textColorHint="@color/text_secondary" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/addTrainingExampleButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Добавить пример обучения" />
+
+        <TextView
+            android:id="@+id/datasetStateText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/exportDatasetButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:enabled="false"
+                android:text="Экспорт JSONL" />
+
+            <Space android:layout_width="8dp" android:layout_height="1dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/clearDatasetButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:enabled="false"
+                android:text="Очистить" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:text="Исправить PhoneAI"
+            android:textColor="@color/text_primary"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Сохраняйте только те ошибки, которые хотите использовать для следующего обучения. Аудио сохраняется лишь после нажатия кнопки и остаётся на телефоне до ручного экспорта."
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp" />
+
+        <EditText
+            android:id="@+id/asrCorrectionInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="@color/accent"
+            android:hint="Правильный текст последней голосовой фразы"
+            android:inputType="textMultiLine|textCapSentences"
+            android:maxLines="5"
+            android:minLines="2"
+            android:textColor="@color/text_primary"
+            android:textColorHint="@color/text_secondary" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/saveAsrCorrectionButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="Сохранить аудио + исправленный текст" />
+
+        <EditText
+            android:id="@+id/llmCorrectionInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:backgroundTint="@color/accent"
+            android:hint="Исправьте последний ответ PhoneAI"
+            android:inputType="textMultiLine|textCapSentences"
+            android:maxLines="8"
+            android:minLines="3"
+            android:textColor="@color/text_primary"
+            android:textColorHint="@color/text_secondary" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/saveLlmCorrectionButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="Сохранить исправленный ответ" />
+
+        <TextView
+            android:id="@+id/feedbackStateText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:background="@color/panel_alt"
+            android:padding="10dp"
+            android:text="Исправлений пока нет"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/analyzeFeedbackButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:enabled="false"
+            android:text="Анализ повторяющихся ошибок" />
+
+        <TextView
+            android:id="@+id/feedbackAnalysisText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:background="@color/panel_alt"
+            android:padding="10dp"
+            android:text="Анализ появится после сохранения исправлений."
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/exportFeedbackButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:enabled="false"
+                android:text="Экспорт feedback ZIP" />
+
+            <Space android:layout_width="8dp" android:layout_height="1dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/clearFeedbackButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:enabled="false"
+                android:text="Очистить" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:text="Локальный голос"
+            android:textColor="@color/text_primary"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Микрофон → VAD → whisper.cpp → PhoneAI → офлайн TTS. Режим ассистента слушает слово активации локально и после ответа ждёт следующую команду 30 секунд."
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/speechModelButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Выбрать Whisper-модель (.bin)" />
+
+        <TextView
+            android:id="@+id/speechModelText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="Модель распознавания не выбрана"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/voiceButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:enabled="false"
+            android:text="🎤 Начать запись" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/autoVoiceSendSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="После распознавания сразу отправлять в PhoneAI"
+            android:textColor="@color/text_primary" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/speakSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:text="Озвучивать ответы только офлайн-голосом"
+            android:textColor="@color/text_primary" />
+
+        <EditText
+            android:id="@+id/wakeWordsInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="@color/accent"
+            android:hint="Слова активации через запятую"
+            android:inputType="textCapSentences"
+            android:maxLines="2"
+            android:textColor="@color/text_primary"
+            android:textColorHint="@color/text_secondary" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/saveWakeWordsButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="Сохранить слова активации" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Лёгкое слово активации (KWS)"
+            android:textStyle="bold" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/kwsPackButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="Импортировать KWS-пакет (.zip)" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/lightweightWakeSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:enabled="false"
+            android:text="Экономичное ожидание слова активации в фоне"
+            android:textColor="@color/text_primary" />
+
+        <TextView
+            android:id="@+id/kwsStatusText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="KWS: пакет не установлен • используется Whisper fallback"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:text="Собрать свой Sakha KWS-корпус"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/kwsTargetInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:backgroundTint="@color/accent"
+            android:hint="Точное слово/фраза активации, например PhoneAI"
+            android:inputType="textCapSentences"
+            android:maxLines="2"
+            android:textColor="@color/text_primary"
+            android:textColorHint="@color/text_secondary" />
+
+        <EditText
+            android:id="@+id/kwsSpeakerInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:backgroundTint="@color/accent"
+            android:hint="ID говорящего, например speaker_01"
+            android:inputType="text"
+            android:maxLines="1"
+            android:textColor="@color/text_primary"
+            android:textColorHint="@color/text_secondary" />
+
+        <EditText
+            android:id="@+id/kwsNegativeTextInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:backgroundTint="@color/accent"
+            android:hint="Текст отрицательной фразы (без слова активации)"
+            android:inputType="textCapSentences"
+            android:maxLines="2"
+            android:textColor="@color/text_primary"
+            android:textColorHint="@color/text_secondary" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/kwsConsentSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Есть согласие говорящего использовать эту запись для обучения"
+            android:textColor="@color/text_primary" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/kwsPositiveButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="Записать слово активации (+)" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/kwsNegativeButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Записать обычную фразу без слова (−)" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/kwsExportCorpusButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:enabled="false"
+            android:text="Экспортировать KWS-корпус (.zip)" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/kwsAuditButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:enabled="false"
+            android:text="Проверить готовность корпуса" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/kwsClearCorpusButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:enabled="false"
+            android:text="Очистить KWS-корпус" />
+
+        <TextView
+            android:id="@+id/kwsCorpusStatusText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="KWS-корпус: +0 / −0 • данные остаются на телефоне"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/kwsAuditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Аудит: добавьте записи, затем нажмите «Проверить готовность корпуса»."
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/handsFreeSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:enabled="false"
+            android:text="Режим ассистента: слово активации + автоопределение тишины"
+            android:textColor="@color/text_primary" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/backgroundSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:enabled="false"
+            android:text="Фоновый режим: продолжать слушать при сворачивании"
+            android:textColor="@color/text_primary" />
+
+        <TextView
+            android:id="@+id/backgroundStateText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Фоновый режим выключен"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Sakha Neural TTS"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/sakhaTtsPackButton"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Импортировать офлайн-пакет саха-голоса (.zip)" />
+
+        <TextView
+            android:id="@+id/sakhaTtsStatusText"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="Sakha TTS: пакет не установлен" />
+
+        <TextView
+            android:id="@+id/voiceStatusText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:background="@color/panel_alt"
+            android:padding="12dp"
+            android:text="Голосовая подсистема готовится…"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:text="Локальный чат"
+            android:textColor="@color/text_primary"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/promptInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="@color/accent"
+            android:enabled="false"
+            android:hint="Напишите сообщение…"
+            android:inputType="textMultiLine|textCapSentences"
+            android:maxLines="5"
+            android:minLines="2"
+            android:textColor="@color/text_primary"
+            android:textColorHint="@color/text_secondary" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/sendButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:enabled="false"
+                android:text="Отправить локально" />
+
+            <Space android:layout_width="8dp" android:layout_height="1dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/stopButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:enabled="false"
+                android:text="Стоп" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Ответ"
+            android:textColor="@color/text_primary"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/answerText"
+            android:layout_width="match_parent"
+            android:layout_height="240dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/panel"
+            android:gravity="top|start"
+            android:padding="14dp"
+            android:text="После загрузки модели ответ появится здесь."
+            android:textColor="@color/text_primary"
+            android:textIsSelectable="true"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/perfText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:paddingBottom="20dp"
+            android:text="Скорость: —"
+            android:textColor="@color/text_secondary"
+            android:textIsSelectable="true"
+            android:textSize="13sp" />
+
+    </LinearLayout>
+</ScrollView>

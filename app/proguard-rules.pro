@@ -1,0 +1,4 @@
+-keep class com.arm.aichat.** { *; }
+-dontwarn com.arm.aichat.**
+-keep class com.k2fsa.sherpa.onnx.** { *; }
+-dontwarn com.k2fsa.sherpa.onnx.**
