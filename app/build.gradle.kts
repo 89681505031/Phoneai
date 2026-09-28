@@ -20,6 +20,16 @@ android {
         ndk { abiFilters += listOf("arm64-v8a") }
     }
 
+    packaging {
+        jniLibs {
+            pickFirsts += setOf(
+                "**/libggml.so",
+                "**/libggml-base.so",
+                "**/libggml-cpu.so"
+            )
+        }
+    }
+
     buildFeatures {
         buildConfig = true
     }
