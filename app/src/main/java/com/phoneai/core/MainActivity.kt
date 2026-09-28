@@ -1553,7 +1553,7 @@ class MainActivity : AppCompatActivity() {
 
             try {
                 val maxOutput = deviceProfile().predictLength
-                engine.sendUserPrompt(SakhaLanguage.routePrompt(prompt), predictLength = maxOutput).collect { piece ->
+                engine.sendUserPrompt(prepareInferencePrompt(prompt), predictLength = maxOutput).collect { piece ->
                     pieces++
                     buffer.append(piece)
                     answerText.text = sanitizeAssistantText(buffer.toString(), final = false)
@@ -1607,6 +1607,12 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun prepareInferencePrompt(prompt: String): String {
+        val routed = SakhaLanguage.routePrompt(prompt)
+        val isQwen3 = currentModel?.name?.contains("qwen3", ignoreCase = true) == true
+        return if (isQwen3) "/no_think\n$routed" else routed
     }
 
     private fun sanitizeAssistantText(value: String, final: Boolean): String {
