@@ -249,7 +249,7 @@ class MainActivity : AppCompatActivity() {
                 setControls()
             }
         }
-        if (SAKHA_TTS_ENABLED) sakhaNeuralTts.reload() else sakhaTtsStatusText.text = "Sakha TTS: приостановлен в 0.16 — развиваем текст и распознавание"
+        if (SAKHA_TTS_ENABLED) sakhaNeuralTts.reload() else sakhaTtsStatusText.text = "Sakha TTS: приостановлен в 0.19 — развиваем текст и распознавание"
         gpuModeRequested = BuildConfig.OPENCL_BUILD && prefs.getBoolean(KEY_GPU_EXPERIMENTAL, false)
         gpuSwitch.isChecked = gpuModeRequested
         restoreCustomizationFields()
@@ -1383,7 +1383,7 @@ class MainActivity : AppCompatActivity() {
             val message = buildString {
                 append("Файл ${formatBytes(sourceSize)} слишком велик для безопасного профиля этого телефона.\n\n")
                 append("Рекомендуется: ${profile.recommendation}.\n")
-                append("Лимит PhoneAI 0.11: около ${formatBytes(profile.hardModelLimitBytes)} для самой модели.")
+                append("Лимит PhoneAI 0.19: около ${formatBytes(profile.hardModelLimitBytes)} для самой модели.")
             }
             AlertDialog.Builder(this)
                 .setTitle("Модель слишком большая")
@@ -2148,9 +2148,9 @@ class MainActivity : AppCompatActivity() {
         profileText.text = buildString {
             appendLine("Профиль: ${profile.name}")
             appendLine("Рекомендуемая модель: ${profile.recommendation}")
-            appendLine("База PhoneAI 0.11: Qwen3-0.6B → LoRA → GGUF")
+            appendLine("База PhoneAI 0.19: Qwen3-0.6B → LoRA → GGUF")
             appendLine("Ускорение: ${if (BuildConfig.OPENCL_BUILD) "CPU + экспериментальный OpenCL" else "CPU"}")
-            append("Макс. ответ PhoneAI 0.11: ${profile.predictLength} токенов")
+            append("Макс. ответ PhoneAI 0.19: ${profile.predictLength} токенов")
         }
     }
 
