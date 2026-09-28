@@ -298,8 +298,27 @@ class ChatActivity : AppCompatActivity() {
                     scrollToBottom()
                 }
 
-                val answer = sanitizeAssistantText(buffer.toString(), final = true)
-                    .ifBlank { "Модель не вернула готовый ответ. Попробуйте переформулировать запрос." }
+                var answer = sanitizeAssistantText(buffer.toString(), final = true)
+                if (answer.isBlank()) {
+                    statusText.text = "Повторяю без режима размышления…"
+                    streamingView.text = "PhoneAI\nФормирую короткий готовый ответ…"
+                    val retryBuffer = StringBuilder()
+                    engine.sendUserPrompt(
+                        buildDirectRetryPrompt(text),
+                        predictLength = DIRECT_RETRY_PREDICT_LENGTH
+                    ).collect { piece ->
+                        retryBuffer.append(piece)
+                        val visible = sanitizeAssistantText(retryBuffer.toString(), final = false)
+                        if (visible.isNotBlank()) {
+                            streamingView.text = "PhoneAI\n" + visible
+                            scrollToBottom()
+                        }
+                    }
+                    answer = sanitizeAssistantText(retryBuffer.toString(), final = true)
+                }
+                if (answer.isBlank()) {
+                    answer = "Не удалось получить финальный текст от локальной модели. Попробуйте ещё раз."
+                }
 
                 activeChat.messages += ChatMessage(role = "assistant", text = answer)
                 store.save(activeChat)
@@ -320,7 +339,22 @@ class ChatActivity : AppCompatActivity() {
     private fun prepareInferencePrompt(prompt: String): String {
         val routed = SakhaLanguage.routePrompt(prompt)
         val isQwen3 = currentModelFile?.name?.contains("qwen3", ignoreCase = true) == true
-        return if (isQwen3) "/no_think\n$routed" else routed
+        return if (isQwen3) "$routed\n/no_think" else routed
+    }
+
+    private fun buildDirectRetryPrompt(prompt: String): String {
+        val languageHint = when (SakhaLanguage.classify(prompt)) {
+            SakhaLanguage.LanguageClass.SAKHA -> "Саха тылынан биир кыра, туһалаах эппиэти биэр."
+            SakhaLanguage.LanguageClass.MIXED -> "Ответь кратко на языке основной просьбы пользователя."
+            SakhaLanguage.LanguageClass.OTHER -> "Ответь прямо и кратко по-русски."
+        }
+        return buildString {
+            append("Повтори ответ на исходный запрос без рассуждений и без тегов <think>. ")
+            append(languageHint)
+            append("\nИсходный запрос: ")
+            append(prompt)
+            append("\n/no_think")
+        }
     }
 
     private fun sanitizeAssistantText(value: String, final: Boolean): String {
