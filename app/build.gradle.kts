@@ -14,8 +14,8 @@ android {
         applicationId = "com.phoneai.core"
         minSdk = 33
         targetSdk = 36
-        versionCode = 16
-        versionName = "0.16.0"
+        versionCode = 19
+        versionName = "0.19.0"
         buildConfigField("boolean", "OPENCL_BUILD", phoneAiOpenCl.toString())
         ndk { abiFilters += listOf("arm64-v8a") }
     }
