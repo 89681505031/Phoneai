@@ -23,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:text="0.16 • Sakha Text + ASR • TTS paused"
+            android:text="0.19 • Local AI + Sakha + Chat + Attachments"
             android:textColor="@color/text_secondary"
             android:textSize="12sp" />
 
