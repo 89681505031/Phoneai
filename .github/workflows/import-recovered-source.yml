@@ -1,0 +1,67 @@
+name: Import recovered PhoneAI source
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    runs-on: ubuntu-24.04
+    if: github.repository == '89681505031/Phoneai'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Stop if source is already imported
+        id: guard
+        shell: bash
+        run: |
+          if [ -f .phoneai-source-imported ]; then
+            echo "already=true" >> "$GITHUB_OUTPUT"
+            echo "PhoneAI source already imported."
+          else
+            echo "already=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Reconstruct recovered source
+        if: steps.guard.outputs.already != 'true'
+        shell: bash
+        run: |
+          set -euxo pipefail
+          mkdir -p /tmp/phoneai-import
+          cat phoneai-bundle-v2/part_*.txt > /tmp/PhoneAICore-0.16-build-min.b64
+          echo "a61c9a9fa0535a478eae39b2d22cbfc1e627e7ad4bc018cec2ac8fbd024ad0ea  /tmp/PhoneAICore-0.16-build-min.b64" | sha256sum -c -
+          base64 -d /tmp/PhoneAICore-0.16-build-min.b64 > /tmp/PhoneAICore-0.16-build-min.zip
+          echo "2ce4dd183c64ca7d47cf2b07e7095206337876d9bfec005a6d4317c416664d1c  /tmp/PhoneAICore-0.16-build-min.zip" | sha256sum -c -
+          unzip -q /tmp/PhoneAICore-0.16-build-min.zip -d /tmp/phoneai-import
+          test -f /tmp/phoneai-import/app/build.gradle.kts
+          test -f /tmp/phoneai-import/scripts/setup_llama.sh
+          test -f /tmp/phoneai-import/scripts/setup_whisper.sh
+          test -f /tmp/phoneai-import/scripts/setup_sherpa_onnx.sh
+
+      - name: Import Android project into repository
+        if: steps.guard.outputs.already != 'true'
+        shell: bash
+        run: |
+          set -euxo pipefail
+          rsync -a --exclude='.git' --exclude='.github' /tmp/phoneai-import/ ./
+          touch .phoneai-source-imported
+          git status --short
+
+      - name: Commit imported source
+        if: steps.guard.outputs.already != 'true'
+        shell: bash
+        run: |
+          set -euxo pipefail
+          git config user.name "PhoneAI Build Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          git commit -m "Import recovered PhoneAI Core 0.16 Android source"
+          git push origin HEAD:main
