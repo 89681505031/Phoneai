@@ -77,13 +77,13 @@ jobs:
           set -euxo pipefail
           APK="$(find app/build/outputs/apk/debug -name '*.apk' -type f | head -1)"
           test -n "$APK"
-          cp "$APK" PhoneAI-debug.apk
-          sha256sum PhoneAI-debug.apk
+          cp "$APK" PhoneAI-0.19-debug.apk
+          sha256sum PhoneAI-0.19-debug.apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: PhoneAI-debug
-          path: PhoneAI-debug.apk
+          name: PhoneAI-0.19-debug
+          path: PhoneAI-0.19-debug.apk
           if-no-files-found: error
           retention-days: 14
