@@ -246,9 +246,12 @@ class ChatActivity : AppCompatActivity() {
         )
         activeChat.messages += userMessage
         if (activeChat.title == "Новый чат") {
-            activeChat.title = rawText.lineSequence().firstOrNull()?.take(42)?.ifBlank { null }
-                ?: attachments.firstOrNull()?.name?.take(42)
-                ?: "Новый чат"
+            val firstLine = rawText.lineSequence().firstOrNull()?.trim()?.take(42)
+            activeChat.title = if (!firstLine.isNullOrBlank()) {
+                firstLine
+            } else {
+                attachments.firstOrNull()?.name?.take(42) ?: "Новый чат"
+            }
         }
         store.save(activeChat)
 
